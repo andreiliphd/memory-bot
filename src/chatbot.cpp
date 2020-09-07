@@ -40,10 +40,61 @@ ChatBot::~ChatBot()
         delete _image;
         _image = NULL;
     }
+    
 }
 
 //// STUDENT CODE
 ////
+    ChatBot::ChatBot(ChatBot &other){
+        std::cout << "ChatBot Copy Constructor" << std::endl;
+        _image = other._image;
+        _rootNode = other._rootNode;
+        _chatLogic = other._chatLogic;
+    }
+
+    ChatBot &ChatBot::operator=(const ChatBot &source) {
+        std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+        if (this != &source) {
+            delete _image;
+            delete _rootNode;
+            delete _chatLogic;
+            _image = nullptr;
+            _rootNode = nullptr;
+            _chatLogic = nullptr;
+            _image = source._image;
+            _rootNode = source._rootNode;
+            _chatLogic = source._chatLogic;
+        }
+        return *this;
+    }
+
+    ChatBot::ChatBot(ChatBot &&source){
+        std::cout << "ChatBot Move Constructor" << std::endl;
+        _image = source._image;
+        _rootNode = source._rootNode;
+        _chatLogic = source._chatLogic;
+        source._image = nullptr;
+        source._rootNode = nullptr;
+        source._chatLogic = nullptr;
+    }
+
+    ChatBot &ChatBot::operator=(ChatBot &&source){
+        std::cout << "ChatBot Move Assignment Operator" << std::endl;
+        if (this != &source) {
+            delete _image;
+            delete _rootNode;
+            delete _chatLogic;
+            _image = source._image;
+            _rootNode = source._rootNode;
+            _chatLogic = source._chatLogic;
+            source._image = nullptr;
+            source._rootNode = nullptr;
+            source._chatLogic = nullptr;
+        }
+        return *this;
+    }
+
+
 
 ////
 //// EOF STUDENT CODE
@@ -92,6 +143,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::mt19937 generator(int(std::time(0)));
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));
+    _chatLogic->SetChatbotHandle(this);
 
     // send selected node answer to user
     _chatLogic->SendMessageToUser(answer);
